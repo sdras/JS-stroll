@@ -44,7 +44,7 @@ function createParticle(i) {
 function Particle(x, y, accelX, accelY, size, color, opacity) {
   var circ = document.createElementNS(svgNS, "circle");
   svg.appendChild(circ);
-  circ.setAttribute("r", size);
+  circ.setAttribute("r", (size/2));
   circ.setAttribute("fill", color);
   
   this.update = function() {
