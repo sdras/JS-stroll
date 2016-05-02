@@ -95,5 +95,4 @@ function initBubble(single) {
       }
     }
   }
-  console.log(lots.length);
 }());
