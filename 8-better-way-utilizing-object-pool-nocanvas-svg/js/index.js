@@ -10,9 +10,10 @@ var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
     vbx = document.createElementNS(svgNS, "viewBox"),
     width = window.innerWidth,
     height = window.innerHeight,
-    gravity = 0.009,
-    friction = 0.999,
-    lots = [];
+    gravity = 0.00009,
+    friction = 0.000001,
+    lots = [],
+    prevTime;
 
 document.body.appendChild(svg);
 document.body.style.background = '#222';
@@ -27,12 +28,15 @@ Bubble.prototype = {
     this.vx = vx;
     this.vy = vy;
   },
-  update: function () {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.vy += gravity;
-    this.vx = this.vx*friction;
-    this.vy = this.vy*friction;
+  update: function (dt) {
+    // friction opposes the direction of velocity
+    var acceleration = -Math.sign(this.vx) * friction;
+    // distance = velocity * time + 0.5 * acceleration * (time ^ 2)
+    this.x += this.vx * dt + 0.5 * acceleration * (dt ^ 2);
+    this.y += this.vy * dt + 0.5 * gravity * (dt ^ 2);
+    // velocity = velocity + acceleration * time
+    this.vy += gravity * dt;
+    this.vx += acceleration * dt;
     this.circ.setAttribute("cx", this.x);
     this.circ.setAttribute("cy", this.y);
     this.circ.setAttribute("stroke", "rgba(1,146,190," + this.opacity + ")");
@@ -40,9 +44,11 @@ Bubble.prototype = {
 };
 
 for (var i = 0; i < 150; i++) {
-  var single = new Bubble(0.5+Math.random()*0.5, 5 + Math.random()*10);
-  lots.push(single);
-  setTimeout(initBubble, i*18, single);
+  setTimeout(function () {
+    var single = new Bubble(0.5+Math.random()*0.5, 5 + Math.random()*10);
+    initBubble(single);
+    lots.push(single);
+  }, i*18);
 }
 
 function Bubble(opacity, radius) {
@@ -58,13 +64,25 @@ function Bubble(opacity, radius) {
 }
 
 function initBubble(single) {
-  single.init(width/2, height/2, -0.5 + Math.random()*1, -1 + Math.random()*1);
+  single.init(width/2, height/2, -0.05 + Math.random()*0.1, -0.1 + Math.random()*0.1);
 }
 
-(function animate() {
+(function animate(currentTime) {
+  var dt;
+  requestAnimationFrame(animate);
+  if (!prevTime) {
+    // only save previous time
+    prevTime = currentTime;
+    return;
+  } else {
+    // calculate the time difference between frames
+    // it has to be less than 25ms because of switching between tabs
+    dt = Math.min(currentTime - prevTime, 25);
+    prevTime = currentTime;
+  }
   for (var i = 0; i < lots.length; i++) {
-    lots[i].update();
-    
+    lots[i].update(dt);
+
     //if the height is small, just let it start over when it gets to the bottom, otherwise, at 3/4 (so that there aren't big gaps)
     if (height < 500) {
       if (lots[i].y > height) {
@@ -77,5 +95,4 @@ function initBubble(single) {
     }
   }
   console.log(lots.length);
-  requestAnimationFrame(animate);
 }());
