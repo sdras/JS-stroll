@@ -4,6 +4,7 @@
 //step one: changed bubble and bubbles to be single and lots, because I couldn't easily see what was bubble and what was Bubble and what was bubbles.
 //step two: changed to using height and width instead of hard-coded integers, create conditionals for large heights
 //step three: convert to svg
+//step four: incorporated PR to use elapsed time to calculate animation, https://github.com/sdras/JS-stroll/pull/2 + performs better
 
 var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
     svgNS = svg.namespaceURI,
