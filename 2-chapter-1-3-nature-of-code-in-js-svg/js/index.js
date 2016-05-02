@@ -4,7 +4,7 @@
 
 var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
     svgNS = svg.namespaceURI,
-    poL = document.createElementNS(svgNS, "viewBox"),
+    vbx = document.createElementNS(svgNS, "viewBox"),
     poL = document.createElementNS(svgNS, "polyline");
 
     svg.appendChild(poL);
