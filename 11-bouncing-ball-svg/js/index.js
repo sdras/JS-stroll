@@ -1,0 +1,77 @@
+// check babel file for original js
+
+"use strict";
+
+var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"),
+    svgNS = svg.namespaceURI,
+    vbx = document.createElementNS(svgNS, "viewBox"),
+    radius = 15,
+    x1 = 0,
+    // initial horizontal position
+y1 = 0,
+    // initial vertical position
+g = 0.11,
+    // acceleration due to gravity
+vx = 2,
+    // initial horizontal speed
+vy = 0,
+    // initial vertical speed
+maxHeight = 300;
+
+//set the SVG and the body
+document.body.style.background = '#222';
+append(document.body, svg);
+setAttributes(svg, {
+  "viewBox": "0 0 " + window.innerWidth + " " + window.innerHeight
+});
+
+//make the circle
+var circ = document.createElementNS(svgNS, "circle");
+append(svg, circ);
+setAttributes(circ, {
+  "cx": x1,
+  "cy": y1,
+  "r": radius
+});
+
+//use rAF to animate but put a boundary on it so it doesn't run forever
+var start = undefined;
+
+function step(timestamp) {
+  if (!start) start = timestamp;
+  var progress = timestamp - start;
+  if (progress < 13000) {
+    bounceBall();
+    window.requestAnimationFrame(step);
+  }
+}
+window.requestAnimationFrame(step);
+
+//move it
+function bounceBall() {
+  vy += g; // gravity increases the vertical speed
+  x1 += vx; // horizontal speed inccrements horizontal position
+  y1 += vy; // vertical speed increases vertical position
+
+  if (y1 > maxHeight - radius) {
+    // if ball hits the ground
+    y1 = maxHeight - radius; // reposition it at the ground
+    vy *= -0.8; // then reverse and reduce its speed
+  }
+  circ.style.transform = "translate3d(" + x1 + "px, " + y1 + "px, 0";
+  circ.style.fill = "hsl(" + (y1 / 3 - 40) + ", 50%, 50%";
+};
+
+//***** helper functions *****//
+
+//function to set multiple attributes at once
+function setAttributes(el, attrs) {
+  for (var key in attrs) {
+    el.setAttribute(key, attrs[key]);
+  }
+}
+
+//function to append children because typing
+function append(el, addition) {
+  el.appendChild(addition);
+}
