@@ -1,0 +1,10 @@
+#poolcontain {
+  position: relative;
+}
+
+.poolarea {
+  position: absolute;
+  left: 50%;
+  -webkit-transform: translate3d(-400px, -90px, 0);
+          transform: translate3d(-400px, -90px, 0);
+}
